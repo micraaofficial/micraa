@@ -3,9 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskbitController;
+use App\Http\Controllers\ServiceController;
+use App\Models\Service;
+
+/*
+|--------------------------------------------------------------------------
+| Homepage
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
-    return view('welcome');
+    $services = Service::where('status', 'active')->get();
+    return view('home', compact('services'));
 });
 
 /*
@@ -15,12 +24,22 @@ Route::get('/', function () {
 */
 
 Route::get('/taskbits', [TaskbitController::class, 'index']);
+
 Route::middleware('auth')->group(function () {
 
-Route::get('/taskbits/create', [TaskbitController::class, 'create']);
-Route::post('/taskbits', [TaskbitController::class, 'store']);
+    Route::get('/taskbits/create', [TaskbitController::class, 'create']);
+    Route::post('/taskbits', [TaskbitController::class, 'store']);
 
 });
+
+/*
+|--------------------------------------------------------------------------
+| Micraa Services (Fiverr style)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/create-service', [ServiceController::class, 'create'])->middleware('auth');
+Route::post('/create-service', [ServiceController::class, 'store'])->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,10 +58,11 @@ Route::get('/dashboard', function () {
 */
 
 Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 require __DIR__.'/auth.php';
-
