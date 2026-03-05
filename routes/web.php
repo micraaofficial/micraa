@@ -13,7 +13,10 @@ use App\Models\Service;
 */
 
 Route::get('/', function () {
-    $services = Service::where('status', 'active')->get();
+    $services = Service::where('status', 'active')
+        ->latest()
+        ->get();
+
     return view('home', compact('services'));
 });
 
@@ -34,12 +37,16 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Micraa Services (Fiverr style)
+| Micraa Services (Post Service)
 |--------------------------------------------------------------------------
 */
 
-Route::get('/create-service', [ServiceController::class, 'create'])->middleware('auth');
-Route::post('/create-service', [ServiceController::class, 'store'])->middleware('auth');
+Route::middleware('auth')->group(function () {
+
+    Route::get('/create-service', [ServiceController::class, 'create']);
+    Route::post('/create-service', [ServiceController::class, 'store']);
+
+});
 
 /*
 |--------------------------------------------------------------------------
