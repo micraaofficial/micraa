@@ -1,18 +1,13 @@
 <?php
 
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TaskbitController;
-=======
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
->>>>>>> d2502ac339b6ae4b7b773a1667fb839f2685eb52
+use App\Http\Controllers\TaskbitController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | Taskbits Routes
@@ -20,12 +15,28 @@ Route::get('/', function () {
 */
 
 Route::get('/taskbits', [TaskbitController::class, 'index']);
+Route::middleware('auth')->group(function () {
+
 Route::get('/taskbits/create', [TaskbitController::class, 'create']);
 Route::post('/taskbits', [TaskbitController::class, 'store']);
-=======
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,7 +46,3 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-use App\Http\Controllers\TaskbitController;
-
-Route::get('/taskbits', [TaskbitController::class, 'index']);
->>>>>>> d2502ac339b6ae4b7b773a1667fb839f2685eb52

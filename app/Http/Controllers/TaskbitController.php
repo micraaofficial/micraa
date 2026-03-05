@@ -3,25 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Service;
 
 class TaskbitController extends Controller
 {
-<<<<<<< HEAD
-   public function index()
-{
-    return view('taskbits.index');
-}
+    public function index()
+    {
+        $taskbits = Service::latest()->get();
+        return view('taskbits.index', compact('taskbits'));
+    }
 
     public function create()
     {
-        return "Create Taskbit Page";
+        return view('taskbits.create');
     }
 
     public function store(Request $request)
-    {
-        return "Taskbit Saved";
+{
+    $imagePath = null;
+
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('services', 'public');
     }
-=======
-    //
->>>>>>> d2502ac339b6ae4b7b773a1667fb839f2685eb52
+
+    Service::create([
+        'user_id' => auth()->id(),
+        'title' => $request->title,
+        'slug' => strtolower(str_replace(' ', '-', $request->title)),
+        'description' => $request->description,
+        'price' => $request->price,
+        'delivery_time' => $request->delivery_time,
+        'image' => $imagePath,
+    ]);
+
+    return redirect('/taskbits');
 }
+}
+
