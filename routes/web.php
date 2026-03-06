@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Service;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskbitController;
 use App\Http\Controllers\ServiceController;
-use App\Models\Service;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,12 +14,62 @@ use App\Models\Service;
 */
 
 Route::get('/', function () {
+    return view('welcome');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Services Page
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/services', function () {
+
     $services = Service::where('status', 'active')
         ->latest()
         ->get();
 
-    return view('home', compact('services'));
+    return view('services.index', compact('services'));
+
 });
+
+/*
+|--------------------------------------------------------------------------
+| Service Detail Page
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/service/{slug}', function ($slug) {
+
+    $service = Service::where('slug', $slug)->firstOrFail();
+
+    return view('services.show', compact('service'));
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Order Route
+|--------------------------------------------------------------------------
+*/
+
+Route::post('/order/{service}', [OrderController::class, 'store'])->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| My Orders Page
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/my-orders', [OrderController::class, 'myOrders'])->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| Order Detail Page (NEW)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/orders/{order}', [OrderController::class, 'show'])->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
