@@ -1,12 +1,12 @@
-<h1>All Services</h1>
-
-<a href="/create-service">Post a Service</a>
-
-<hr>
+<h1>Marketplace Services</h1>
 
 @foreach($services as $service)
 
-<div style="border:1px solid #ccc;padding:15px;margin:10px;">
+<div style="border:1px solid #ddd;padding:15px;margin-bottom:20px;width:300px;">
+
+@if($service->image)
+<img src="/{{ $service->image }}" width="300">
+@endif
 
 <h3>
 <a href="/service/{{ $service->slug }}">
@@ -14,9 +14,11 @@
 </a>
 </h3>
 
-<p>{{ $service->description }}</p>
+<p>${{ $service->price }}</p>
 
-<strong>$ {{ $service->price }}</strong>
+<a href="/service/{{ $service->slug }}">
+<button>View Service</button>
+</a>
 
 </div>
 
