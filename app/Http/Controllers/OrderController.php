@@ -13,10 +13,19 @@ class OrderController extends Controller
     {
         $service = Service::findOrFail($service_id);
 
+        // Calculate Micraa commission (10%)
+        $commission = $service->price * 0.10;
+
+        // Seller earning after commission
+        $sellerEarning = $service->price - $commission;
+
         Order::create([
             'buyer_id' => Auth::id(),
+            'seller_id' => $service->user_id,
             'service_id' => $service->id,
             'price' => $service->price,
+            'commission' => $commission,
+            'seller_earning' => $sellerEarning,
             'status' => 'pending'
         ]);
 

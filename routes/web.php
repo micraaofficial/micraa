@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Service;
+use App\Models\Order;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskbitController;
 use App\Http\Controllers\ServiceController;
@@ -65,11 +66,47 @@ Route::get('/my-orders', [OrderController::class, 'myOrders'])->middleware('auth
 
 /*
 |--------------------------------------------------------------------------
-| Order Detail Page (NEW)
+| Order Detail Page
 |--------------------------------------------------------------------------
 */
 
 Route::get('/orders/{order}', [OrderController::class, 'show'])->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| Seller Dashboard
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/seller/dashboard', function () {
+
+    $services = Service::where('user_id', auth()->id())->count();
+
+    $orders = Order::where('seller_id', auth()->id())->count();
+
+    $earnings = Order::where('seller_id', auth()->id())
+        ->sum('seller_earning');
+
+    return view('seller.dashboard', compact('services','orders','earnings'));
+
+})->middleware('auth');
+
+/*
+|--------------------------------------------------------------------------
+| Seller Orders (NEW)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/seller/orders', function () {
+
+    $orders = Order::with('service')
+        ->where('seller_id', auth()->id())
+        ->latest()
+        ->get();
+
+    return view('seller.orders', compact('orders'));
+
+})->middleware('auth');
 
 /*
 |--------------------------------------------------------------------------
